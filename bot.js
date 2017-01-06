@@ -1,4 +1,3 @@
-//First of all, we need to load the dependencies we downloaded!
 var Discord = require('discord.js');
 
 const token = 'MjY0NDUwNjE1MTM5MjM3ODk5.C0gwaA.KJmJVH4aWm1b2WAbbYjQLf6w7VA';
@@ -7,16 +6,10 @@ var k2 = new Discord.Client();
 
 k2.login(token);
 
-function output (err) {
-	if (err) {
-		console.log('There was an error logging in: ${error}');
-		return;
-	}
-}
-
 var fetch_time;
 var messages;
 k2.on("ready", function (rawEvent) {
+	console.log("Connected to server");
 	k2.user.setPresence({ game : { name : '!k2help' }});
     fetch_time = 0;
 });
