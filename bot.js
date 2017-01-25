@@ -22,6 +22,8 @@ k2.on("message", function (message) {
         //arguments = arguments.splice(1);
         arguments.shift(); // no longer C-style argv
 
+		
+
         switch(command) {
             case "hello" :
                 message.channel.sendMessage("The captain says you're a" +
@@ -72,4 +74,11 @@ k2.on("message", function (message) {
                 break;		
         } // switch
     } // if 
+	else {
+	 	if (message.toString().indexOf("JOHN CENA") !== -1) {
+			//message.react({ "id" : 272792565449752576, "name" : ":trumpet:"});
+			message.react("\uD83D\uDCA5"); 	// boom
+			message.react("\uD83C\uDFBA"); 	// trumpet
+		}
+	} // els
 });
