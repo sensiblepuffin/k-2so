@@ -42,34 +42,6 @@ k2.on("message", function (message) {
             case "fliptable" :
                 message.channel.sendMessage("(╯°□°）╯︵ ┻━┻");
                 break;
-            /*case "search" :
-                if (arguments.size == null) {
-                    message.channel.sendMessage("Search for what, " 
-                        + message.author.username + "?");
-                }
-                
-                // fetch logic
-                if (fetch_time != 0) {
-                    if (Math.floor(Date.now()/1000) - fetch_time > 60) {
-                        messages = message.channel.fetchMessages(5000).prototype();
-                    }
-                    message.channel.sendMessage("Skipping fetch");  
-                }     
-                else { 
-                    fetch_time = Math.floor(Date.now()/1000);
-                    messages = message.channel.fetchMessage(5000);
-                    messages.then(function(val) { console.log("Promise fulfilled");});   
-                }
-                console.log("Type: " + typeof(messages));
-                // search logic
-                var results = messages.filter(function(keyval) {
-                    return keyval.content.includes(arguments[0]);
-                });
-
-                message.channel.sendMessage("**NOTE** : This command is " + 
-                    "still under construction.");
-                break; //case search
-            */
             default :
                 break;		
         } // switch
