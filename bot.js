@@ -1,22 +1,16 @@
 var Discord = require('discord.js');
-
-var k2 = new Discord.Client();
-
 var fs = require ('fs');
 var path = require ('path');
 
-//require('token');
+var k2 = new Discord.Client();
 
 var token = fs.readFileSync('token', 'utf8').replace(/^\s+|\s+$/g,'');
 k2.login(token);
 
-var fetch_time;
-var messages;
 k2.on("ready", function (rawEvent) {
 	console.log("Connected to server");
 	k2.user.setPresence({ game : { name : '!k2help' }});
-    fetch_time = 0;
-});
+}); // on ready
 
 var responseDict = {
 	"hello": "The captain says you're a friend. I will not kill you.",
@@ -43,4 +37,4 @@ k2.on("message", function (message) {
 			message.react("\uD83C\uDFBA"); 	// trumpet
 		} // if
 	} // else
-});
+}); // on.message
