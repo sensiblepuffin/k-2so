@@ -30,7 +30,7 @@ var responseDict = {
 	"fliptable" : "(╯°□°)╯︵ ┻━┻"
 }
 
-var voiceReactInProgress = false;
+var audioTimeout = new Date();
 function findInVoiceChannel(guild, userName) {
 	return guild.channels.find(function(channel) {
 		return (channel.type === "voice" 
@@ -38,17 +38,38 @@ function findInVoiceChannel(guild, userName) {
 				return member.user.username === userName;	
 		})); // find member;
 	});
-} // voiceReactInProgress
+} // findInVoiceChannel
+
+function playAudioInChannel(tchannel, vchannel, path) {
+	if (new Date().getTime() < audioTimeout) {
+		tchannel.sendMessage("Have some patience.");
+		return;
+	}
+	audioTimeout = new Date();
+	audioTimeout = audioTimeout.setMinutes(audioTimeout.getMinutes() + 5);
+	vchannel.join().then(connection => {
+		console.log("Joined " + vchannel.name);
+		sleep(750);
+		const dispatch = connection.playFile(path, 
+			{ volume : 0.5 }, function(error, intent) {
+			intent.on("error", function(err) {
+				console.log("playFile: " + error);
+			})
+		});
+		dispatch.on('end',() => connection.disconnect());
+	}).catch(console.log);
+	voiceReactInProgress = false;
+}
 
 k2.on("message", function (message) {
+	var author = message.author;
+	var channel = message.channel;
     if (message.content.substring(0, 1) == "!") {
         var arguments = message.content.substring(1).split(" ");
         var command = arguments[0];
-		var channel = message.channel;
         arguments.shift(); // just the arguments
-
         if (responseDict[command]) { 
-                channel.sendMessage(responseDict[command]);
+        	channel.sendMessage(responseDict[command]);
         } // if
     } // if
 	// non-command responses
@@ -59,28 +80,16 @@ k2.on("message", function (message) {
 		} // if
 		if (message.toString().toLowerCase().indexOf("who is champ?") !== -1) {	
 			var vchannel = findInVoiceChannel(message.guild, 
-				message.author.username);
-			if (vchannel == undefined || voiceReactInProgress) {
+				author.username);
+			if (vchannel == undefined) {
 				message.reply("THAT QUESTION WILL BE ANSWERED THIS SUNDAY!");
 			} // if
 			else {
 				voiceReactInProgress = true;
-				vchannel.join()
-					.then(connection => {
-						console.log("Joined " + vchannel.name);
-						sleep(750);
-						const dispatch = connection.playFile("audio/whoischamp.mp3", 
-							{ volume : 0.5 }, function(error, intent) {
-							intent.on("error", function(err) {
-								console.log("playFile: " + error);
-							})
-						});
-						dispatch.on('end',() => connection.disconnect());
-					})
-					.catch(console.log);
-				vchannel.leave();
+				playAudioInChannel(channel, vchannel, "audio/whoischamp.mp3");	
+				voiceReactInProgress = false;
+
 			} // else
-			voiceReactInProgress = false;
-		} // if
+					} // if
 	} // else
 }); // on.message
