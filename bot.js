@@ -9,13 +9,8 @@ k2.login(token);
 
 
 function sleep (ms) {
-	var start = new Date().getTime();
-	for (var i = 0; i < 1e7; i++) {
-		if ((new Date().getTime() - start) > ms) {
-			break;
-		}
-	}
-}
+    return new Promise(resolve => setTimeout(resolve, ms));
+} // sleep
 
 k2.on("ready", function (rawEvent) {
 	console.log("Connected to server");
@@ -49,15 +44,15 @@ function playAudioInChannel(tchannel, vchannel, path) {
 	audioTimeout = audioTimeout.setMinutes(audioTimeout.getMinutes() + 5);
 	vchannel.join().then(connection => {
 		console.log("Joined " + vchannel.name);
-		sleep(750);
-		const dispatch = connection.playFile(path, 
-			{ volume : 0.5 }, function(error, intent) {
-			intent.on("error", function(err) {
-				console.log("playFile: " + error);
-			})
-		});
-		dispatch.on('end',() => connection.disconnect());
-	}).catch(console.log);
+        setTimeout(function() {
+            const dispatch = connection.playFile(path, 
+                { volume : 0.5 }, function(error, intent) {
+                intent.on("error", function(err) {
+                    console.log("playFile: " + error);
+                })
+            });
+            dispatch.on('end',() => connection.disconnect()) }, 750); })
+        .catch(console.log);        
 	voiceReactInProgress = false;
 }
 
