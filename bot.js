@@ -25,6 +25,56 @@ var responseDict = {
 	"fliptable" : "(╯°□°)╯︵ ┻━┻"
 }
 
+var contestInProgress = false;
+var contestStartTime;
+var contestParticipants [];
+var functionDict = {
+    "contest": function(message) { 
+        if (contestInProgress) {
+            message.reply("There is already a contest in progress.");
+            return;
+        }
+        var arguments = message.content.substring(1).split(",");
+        arguments.shift(); // just the arguments
+        if (arguments.length !== 2) {
+            message.reply("The syntax of this command is: \n" + "!contest,<what you are "
+                + "giving away>,<how long the contest will last [minutes]>", { code : true });
+            return;
+        }
+        contestInProgress = true;
+        contestParticipants = [];
+        message.channel.sendMessage("@everyone, a contest has begun! " + message.author + 
+            " is offering " + arguments[0] + " in " + arguments[1] + " minutes! " +
+            "Use !entercontest to enter the contest!";
+        setTimeout(function(message) {
+            message.channel.sendMessage("@everyone, the contest has ended! " + 
+                contestParticipants[Math.floor(Math.random()*contestParticipants.length())] +
+                " has won " + arguments[0]);
+        }, 1000*60*arguments[1]);
+    },
+    "entercontest": function(message) {
+        if (!contestInProgress) {
+            message.reply("What contest?");
+            return;
+        }
+        if (contestParticipants.indexOf(message.author) !== -1) {
+            message.reply("Only one entry per person. That is, unless you know a guy.");
+            return;
+        }
+        contestParticipants.push(message.author);
+        message.reply("Good luck!");
+    }
+    "endcontest": function(message) {
+        if (!contestInProgress) {
+            message.reply("What contest?");
+            return;
+        }
+        contestInProgress = false;
+        message.channel.sendMessage("@everyone, " + message.author + " has ended the contest "  +
+            "prematurely, similar to how their most recent sexual encounter ended.");
+    }
+}
+
 var audioTimeout = new Date();
 function findInVoiceChannel(guild, userName) {
 	return guild.channels.find(function(channel) {
@@ -66,6 +116,9 @@ k2.on("message", function (message) {
         if (responseDict[command]) { 
         	channel.sendMessage(responseDict[command]);
         } // if
+        else if (functionDict[command]) {
+            functionDict[command].call(message);
+        }
     } // if
 	// non-command responses
 	else {
@@ -81,7 +134,7 @@ k2.on("message", function (message) {
 			} // if
 			else {
 				voiceReactInProgress = true;
-				playAudioInChannel(channel, vchannel, "audio/whoischamp.mp3");	
+				playAudioInChannel(channel, vchannel, "audio/whoischamp.wav");	
 				voiceReactInProgress = false;
 
 			} // else
