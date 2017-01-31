@@ -26,7 +26,8 @@ var responseDict = {
 }
 
 var contestInProgress = false;
-var contestStartTime;
+var contestEndTime;
+var contestDetails;
 var contestParticipants = [];
 var functionDict = {
     "contest": function() { 
@@ -46,6 +47,8 @@ var functionDict = {
         this.channel.sendMessage("@everyone, a contest has begun! " + this.author + 
             " is giving away " + arguments[0] + " in " + arguments[1] + " minute(s)! " +
             "Use !entercontest to enter the contest!");
+		contestEndTime = new Date(new Date().getTime() + 60*1000*arguments[1]);
+		contestDetails = [ this.author, arguments[0], contestEndTime ];
         setTimeout(function(message, prize) {
             message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " + 
                 contestParticipants[Math.ceil(Math.random()*(contestParticipants.length-1))] +
@@ -64,6 +67,14 @@ var functionDict = {
         contestParticipants.push(this.author);
         this.channel.sendMessage("Your entry has been received. Good luck!");
     },
+	"conteststatus": function() {
+		if (!contestInProgress) {
+			this.reply("What contest?");
+			return;
+		}
+		this.channel.sendMessage("The current contest was started by " + contestDetails[0] + 
+			", the prize is " + contestDetails[1] + ", and the contest ends at " + contestDetails[2] + ".");
+	},
     "endcontest": function() {
         if (!contestInProgress) {
             this.reply("What contest?");
