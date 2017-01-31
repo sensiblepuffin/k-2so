@@ -27,50 +27,50 @@ var responseDict = {
 
 var contestInProgress = false;
 var contestStartTime;
-var contestParticipants [];
+var contestParticipants = [];
 var functionDict = {
-    "contest": function(message) { 
+    "contest": function() { 
         if (contestInProgress) {
-            message.reply("There is already a contest in progress.");
+            this.reply("There is already a contest in progress.");
             return;
         }
-        var arguments = message.content.substring(1).split(",");
+        var arguments = this.content.substring(1).split("!");
         arguments.shift(); // just the arguments
         if (arguments.length !== 2) {
-            message.reply("The syntax of this command is: \n" + "!contest,<what you are "
-                + "giving away>,<how long the contest will last [minutes]>", { code : true });
+            this.channel.sendMessage("The syntax of this command is: \n" + "!contest !<what you are "
+                + "giving away> !<how long the contest will last [minutes]>", { code : true });
             return;
         }
         contestInProgress = true;
-        contestParticipants = [];
-        message.channel.sendMessage("@everyone, a contest has begun! " + message.author + 
-            " is offering " + arguments[0] + " in " + arguments[1] + " minutes! " +
-            "Use !entercontest to enter the contest!";
-        setTimeout(function(message) {
-            message.channel.sendMessage("@everyone, the contest has ended! " + 
-                contestParticipants[Math.floor(Math.random()*contestParticipants.length())] +
-                " has won " + arguments[0]);
-        }, 1000*60*arguments[1]);
+        contestParticipants = [ "No one" ];
+        this.channel.sendMessage("@everyone, a contest has begun! " + this.author + 
+            " is giving away " + arguments[0] + " in " + arguments[1] + " minute(s)! " +
+            "Use !entercontest to enter the contest!");
+        setTimeout(function(message, prize) {
+            message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " + 
+                contestParticipants[Math.ceil(Math.random()*(contestParticipants.length-1))] +
+                " has won " + prize + "!");
+        }, 1000*60*arguments[1], this, arguments[0]);
     },
-    "entercontest": function(message) {
+    "entercontest": function() {
         if (!contestInProgress) {
-            message.reply("What contest?");
+            this.reply("What contest?");
             return;
         }
-        if (contestParticipants.indexOf(message.author) !== -1) {
-            message.reply("Only one entry per person. That is, unless you know a guy.");
+        if (contestParticipants.indexOf(this.author) !== -1) {
+            this.reply("Only one entry per person. That is, unless you know a guy.");
             return;
         }
-        contestParticipants.push(message.author);
-        message.reply("Good luck!");
-    }
-    "endcontest": function(message) {
+        contestParticipants.push(this.author);
+        this.channel.sendMessage("Your entry has been received. Good luck!");
+    },
+    "endcontest": function() {
         if (!contestInProgress) {
-            message.reply("What contest?");
+            this.reply("What contest?");
             return;
         }
         contestInProgress = false;
-        message.channel.sendMessage("@everyone, " + message.author + " has ended the contest "  +
+        this.channel.sendMessage("@everyone, " + this.author + " has ended the contest "  +
             "prematurely, similar to how their most recent sexual encounter ended.");
     }
 }
@@ -101,8 +101,12 @@ function playAudioInChannel(tchannel, vchannel, path) {
                     console.log("playFile: " + error);
                 })
             });
-            dispatch.on('end',() => connection.disconnect()) }, 750); })
-        .catch(console.log);        
+            dispatch.on('speaking',(val) =>  {
+			if (!val) { connection.disconnect(); }
+			})
+			}, 750); })
+        .catch(console.log);
+	vchannel.leave();
 	voiceReactInProgress = false;
 }
 
@@ -126,7 +130,8 @@ k2.on("message", function (message) {
 			message.react("\uD83D\uDCA5"); 	// boom
 			message.react("\uD83C\uDFBA"); 	// trumpet
 		} // if
-		if (message.toString().toLowerCase().indexOf("who is champ?") !== -1) {	
+		if (message.toString().toLowerCase().indexOf("who is champ?") !== -1) {
+			console.log("Hint: It's John Cena");
 			var vchannel = findInVoiceChannel(message.guild, 
 				author.username);
 			if (vchannel == undefined) {
@@ -134,7 +139,7 @@ k2.on("message", function (message) {
 			} // if
 			else {
 				voiceReactInProgress = true;
-				playAudioInChannel(channel, vchannel, "audio/whoischamp.wav");	
+				playAudioInChannel(channel, vchannel, "audio/whoischamp.mp3");	
 				voiceReactInProgress = false;
 
 			} // else
