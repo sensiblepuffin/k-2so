@@ -5,7 +5,7 @@ var path = require ('path');
 var k2 = new Discord.Client();
 
 var token;
-if (fs.existsSync('token') {
+if (fs.existsSync('token')) {
 	token = fs.readFileSync('token', 'utf8').replace(/^\s+|\s+$/g,'');
 }
 else {
