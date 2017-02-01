@@ -1,7 +1,7 @@
 var Discord = require('discord.js');
-var fs = require ('fs');
-var path = require ('path');
-
+var fs = require('fs');
+var path = require('path');
+var http = require('http');
 var k2 = new Discord.Client();
 
 var token;
@@ -10,7 +10,12 @@ if (fs.existsSync('token')) {
 }
 else {
 	// Heroku
-	token = process_env.TOKEN;
+	token = process.env.TOKEN;
+
+	http.createServer(function(req,res) {
+		res.writeHead(200, {'Content-Type': 'text/plain'});
+		res.send('K-2SO is operational.\n');
+	}).listen(process.env.PORT || 6000);
 }
 k2.login(token);
 
