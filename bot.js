@@ -14,7 +14,7 @@ else {
 
 	http.createServer(function(req,res) {
 		res.writeHead(200, {'Content-Type': 'text/plain'});
-		res.send('K-2SO is operational.\n');
+		res.write('K-2SO is operational.\n');
 	}).listen(process.env.PORT);
 }
 k2.login(token);
