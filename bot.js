@@ -9,9 +9,8 @@ if (fs.existsSync('token')) {
 	token = fs.readFileSync('token', 'utf8').replace(/^\s+|\s+$/g,'');
 }
 else {
-	// Heroku
 	token = process.env.TOKEN;
-
+	// to keep Heroku happy
 	http.createServer(function(req,res) {
 		res.writeHead(200, {'Content-Type': 'text/plain'});
 		res.write('K-2SO is operational.\n');
@@ -50,8 +49,9 @@ var functionDict = {
         var arguments = this.content.substring(1).split("!");
         arguments.shift(); // just the arguments
         if (arguments.length !== 2) {
-            this.channel.sendMessage("The syntax of this command is: \n" + "!contest !<what you are "
-                + "giving away> !<how long the contest will last [minutes]>", { code : true });
+            this.channel.sendMessage("The syntax of this command is: \n" + 
+				"!contest !<what you are giving away> !<how long the contest will last" +
+				" [minutes]>", { code : true });
             return;
         }
         contestInProgress = true;
@@ -62,9 +62,11 @@ var functionDict = {
 		contestEndTime = new Date(new Date().getTime() + 60*1000*arguments[1]);
 		contestDetails = [ this.author, arguments[0], contestEndTime ];
         setTimeout(function(message, prize) {
-            message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " + 
-                contestParticipants[Math.ceil(Math.random()*(contestParticipants.length-1))] +
+            message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " 
+				+ "Out of " + contestParticipants.length-1 + " entries, " + 
+				contestParticipants[Math.ceil(Math.random()*(contestParticipants.length-1))] +
                 " has won " + prize + "!");
+		contestInProgress = false;
         }, 1000*60*arguments[1], this, arguments[0]);
     },
     "entercontest": function() {
@@ -85,13 +87,18 @@ var functionDict = {
 			return;
 		}
 		this.channel.sendMessage("The current contest was started by " + contestDetails[0] + 
-			", the prize is " + contestDetails[1] + ", and the contest ends at " + contestDetails[2] + ".");
+			", the prize is " + contestDetails[1] + ", and the contest ends at " + 
+			contestDetails[2] + ".");
 	},
     "endcontest": function() {
         if (!contestInProgress) {
             this.reply("What contest?");
             return;
         }
+		if (this.author !== contestDetails[0]) {
+			this.channel.sendMessage("This isn't your contest.");
+			return;
+		}
         contestInProgress = false;
         this.channel.sendMessage("@everyone, " + this.author + " has ended the contest "  +
             "prematurely, similar to how their most recent sexual encounter ended.");
