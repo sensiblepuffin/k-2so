@@ -62,8 +62,7 @@ var functionDict = {
 		contestEndTime = new Date(new Date().getTime() + 60*1000*arguments[1]);
 		contestDetails = [ this.author, arguments[0], contestEndTime ];
         setTimeout(function(message, prize) {
-            message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " 
-				+ "Out of " + contestParticipants.length-1 + " entries, " + 
+            message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " +
 				contestParticipants[Math.ceil(Math.random()*(contestParticipants.length-1))] +
                 " has won " + prize + "!");
 		contestInProgress = false;
