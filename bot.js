@@ -55,7 +55,7 @@ var functionDict = {
             return;
         }
         contestInProgress = true;
-        contestParticipants = [ "No one" ];
+        contestParticipants.push("No one");
         this.channel.sendMessage("@everyone, a contest has begun! " + this.author + 
             " is giving away " + arguments[0] + " in " + arguments[1] + " minute(s)! " +
             "Use !entercontest to enter the contest!");
@@ -63,8 +63,10 @@ var functionDict = {
 		contestDetails = [ this.author, arguments[0], contestEndTime ];
         setTimeout(function(message, prize) {
             message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " +
+				"Out of " + contestParticipants.length-1 + " entries, " +
 				contestParticipants[Math.ceil(Math.random()*(contestParticipants.length-1))] +
                 " has won " + prize + "!");
+		contestParticipants = [];
 		contestInProgress = false;
         }, 1000*60*arguments[1], this, arguments[0]);
     },
