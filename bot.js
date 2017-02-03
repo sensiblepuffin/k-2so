@@ -39,6 +39,7 @@ var responseDict = {
 var contestInProgress = false;
 var contestEndTime;
 var contestDetails;
+var contestNumParticipants;
 var contestParticipants = [];
 var functionDict = {
     "contest": function() { 
@@ -55,7 +56,7 @@ var functionDict = {
             return;
         }
         contestInProgress = true;
-        contestParticipants.push("No one");
+        contestNumParticipants = contestParticipants.push("No one");
         this.channel.sendMessage("@everyone, a contest has begun! " + this.author + 
             " is giving away " + arguments[0] + " in " + arguments[1] + " minute(s)! " +
             "Use !entercontest to enter the contest!");
@@ -63,7 +64,7 @@ var functionDict = {
 		contestDetails = [ this.author, arguments[0], contestEndTime ];
         setTimeout(function(message, prize) {
             message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " +
-				"Out of " + contestParticipants.length-1 + " entries, " +
+				"Out of " + (contestParticipants.length-1).toString() + " entries, " +
 				contestParticipants[Math.ceil(Math.random()*(contestParticipants.length-1))] +
                 " has won " + prize + "!");
 		contestParticipants = [];
@@ -79,7 +80,7 @@ var functionDict = {
             this.reply("Only one entry per person. That is, unless you know a guy.");
             return;
         }
-        contestParticipants.push(this.author);
+        contestNumParticipants = contestParticipants.push(this.author);
         this.channel.sendMessage("Your entry has been received. Good luck!");
     },
 	"conteststatus": function() {
