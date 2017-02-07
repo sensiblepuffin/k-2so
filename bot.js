@@ -2,6 +2,8 @@ var Discord = require('discord.js');
 var fs = require('fs');
 var path = require('path');
 var http = require('http');
+var moment = require('moment');
+moment().format();
 var k2 = new Discord.Client();
 
 var token;
@@ -59,7 +61,7 @@ var functionDict = {
         this.channel.sendMessage("@everyone, a contest has begun! " + this.author + 
             " is giving away " + arguments[0] + " in " + arguments[1] + " minute(s)! " +
             "Use !entercontest to enter the contest!");
-		contestEndTime = new Date(new Date().getTime() + 60*1000*arguments[1]);
+		contestEndTime = moment().add(arguments[1]*60, 's');
 		contestDetails = [ this.author, arguments[0], contestEndTime ];
         setTimeout(function(message, prize) {
             message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " 
