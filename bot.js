@@ -62,7 +62,7 @@ var functionDict = {
         this.channel.sendMessage("@everyone, a contest has begun! " + this.author + 
             " is giving away " + arguments[0] + " in " + arguments[1] + " minute(s)! " +
             "Use !entercontest to enter the contest!");
-		contestEndTime = moment().add(arguments[1]*60, 's');
+		contestEndTime = moment().add(arguments[1], 'm');
 		contestDetails = [ this.author, arguments[0], contestEndTime ];
         setTimeout(function(message, prize) {
             message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " +
