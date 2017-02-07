@@ -108,7 +108,7 @@ var functionDict = {
             "prematurely, similar to how their most recent sexual encounter ended.");
     },
     "currenttime": function() {
-        this.reply("the current time is " + moment().format('LLL'));
+        this.reply("the current time is " + moment('hh:mm:ss a');
     }
 }
 
