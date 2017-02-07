@@ -62,7 +62,7 @@ var functionDict = {
         this.channel.sendMessage("@everyone, a contest has begun! " + this.author + 
             " is giving away " + arguments[0] + " in " + arguments[1] + " minute(s)! " +
             "Use !entercontest to enter the contest!");
-		contestEndTime = moment().add(arguments[1], 'm');
+		contestEndTime = moment().add(arguments[1], 'minutes');
 		contestDetails = [ this.author, arguments[0], contestEndTime ];
         setTimeout(function(message, prize) {
             message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " +
@@ -106,6 +106,9 @@ var functionDict = {
         contestInProgress = false;
         this.channel.sendMessage("@everyone, " + this.author + " has ended the contest "  +
             "prematurely, similar to how their most recent sexual encounter ended.");
+    },
+    "currenttime": function() {
+        this.reply("the current time is " + moment());
     }
 }
 
