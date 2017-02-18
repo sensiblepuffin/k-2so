@@ -171,7 +171,7 @@ k2.on("message", function (message) {
 			console.log("Hint: It's John Cena");
 			var vchannel = findInVoiceChannel(message.guild, 
 				author.username);
-			if (vchannel === undefined) {
+			if (vchannel === null) {
 				message.reply("THAT QUESTION WILL BE ANSWERED THIS SUNDAY!");
 			} // if
             else {
@@ -184,7 +184,7 @@ k2.on("message", function (message) {
             console.log("Yeaaaah boiiiii");
             var vchannel = findInVoiceChannel(message.guild,
                 author.username);
-            if (vchannel === undefined) {
+            if (vchannel === null) {
                 message.react("Y");
                 message.react("E");
                 message.react("A");
