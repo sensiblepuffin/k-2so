@@ -173,11 +173,12 @@ k2.on("message", function (message) {
 				author.username);
 			if (vchannel === undefined) {
 				message.reply("THAT QUESTION WILL BE ANSWERED THIS SUNDAY!");
-                return;
 			} // if
-            voiceReactInProgress = true;
-            playAudioInChannel(channel, vchannel, "audio/whoischamp.mp3");	
-            voiceReactInProgress = false;
+            else {
+                voiceReactInProgress = true;
+                playAudioInChannel(channel, vchannel, "audio/whoischamp.mp3");	
+                voiceReactInProgress = false;
+            }
 		} // if
         else if (message.toString().toLowerCase().indexOf("yeah boy") !== -1) {
             console.log("Yeaaaah boiiiii");
@@ -191,11 +192,12 @@ k2.on("message", function (message) {
                 message.react("B");
                 message.react("O");
                 message.react("I");
-                return;
             }
-            voiceReactInProgress = true;
-            playAudioInChannel(channel, vchannel, "audio/yeahboy.mp3");
-            voiceReactInProgress = false;
+            else {
+                voiceReactInProgress = true;
+                playAudioInChannel(channel, vchannel, "audio/yeahboy.mp3");
+                voiceReactInProgress = false;
+            }
         }
 	} // else
 }); // on.message
