@@ -171,15 +171,31 @@ k2.on("message", function (message) {
 			console.log("Hint: It's John Cena");
 			var vchannel = findInVoiceChannel(message.guild, 
 				author.username);
-			if (vchannel == undefined) {
+			if (vchannel === undefined) {
 				message.reply("THAT QUESTION WILL BE ANSWERED THIS SUNDAY!");
+                return;
 			} // if
-			else {
-				voiceReactInProgress = true;
-				playAudioInChannel(channel, vchannel, "audio/whoischamp.mp3");	
-				voiceReactInProgress = false;
-
-			} // else
-					} // if
+            voiceReactInProgress = true;
+            playAudioInChannel(channel, vchannel, "audio/whoischamp.mp3");	
+            voiceReactInProgress = false;
+		} // if
+        else if (message.toString().toLowerCase().indexOf("yeah boy") !== -1) {
+            console.log("Yeaaaah boiiiii");
+            var vchannel = findInVoiceChannel(message.guild,
+                author.username);
+            if (vchannel === undefined) {
+                message.react("Y");
+                message.react("E");
+                message.react("A");
+                message.react("H");
+                message.react("B");
+                message.react("O");
+                message.react("I");
+                return;
+            }
+            voiceReactInProgress = true;
+            playAudioInChannel(channel, vchannel, "audio/yeahboy.mp3");
+            voiceReactInProgress = false;
+        }
 	} // else
 }); // on.message
