@@ -32,6 +32,10 @@ k2.on("ready", function (rawEvent) {
 	k2.user.setPresence({ game : { name : '!k2help' }});
 }); // on.ready
 
+k2.voiceConnections[0].on("error", function(err) {
+	
+});
+
 var responseDict = {
 	"hello": "The captain says you're a friend. I will not kill you.",
 	"goodbye" : "Good riddance.",
@@ -214,7 +218,12 @@ k2.on("message", function (message) {
             }
             else {
                 voiceReactInProgress = true;
-                playAudioInChannel(channel, vchannel, "audio/yeahboy.mp3");
+				try {
+					playAudioInChannel(channel, vchannel, "audio/yeahboy.mp3");
+				} catch(err) {
+					console.error(err);
+					vchannel.disconnect();
+				}
                 voiceReactInProgress = false;
             }
         }
