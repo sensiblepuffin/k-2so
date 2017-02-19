@@ -129,7 +129,7 @@ function playAudioInChannel(tchannel, vchannel, path) {
 		tchannel.sendMessage("Have some patience.");
 		return;
 	}
-	if (k2.voice.Connections.length > 0) {
+	if (k2.voiceConnections) {
         var connections = k2.voiceConnections.array();
         for (var i = 0, len = connections.length; i < len; i++) {
             connections[i].disconnect();
