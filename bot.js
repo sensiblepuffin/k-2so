@@ -32,10 +32,6 @@ k2.on("ready", function (rawEvent) {
 	k2.user.setPresence({ game : { name : '!k2help' }});
 }); // on.ready
 
-k2.voiceConnections[0].on("error", function(err) {
-	
-});
-
 var responseDict = {
 	"hello": "The captain says you're a friend. I will not kill you.",
 	"goodbye" : "Good riddance.",
