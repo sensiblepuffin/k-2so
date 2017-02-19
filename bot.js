@@ -4,6 +4,8 @@ var path = require('path');
 var http = require('http');
 var moment = require('moment');
 moment().format();
+//var async = require('asyncawait/async');
+//var await = require('asyncawait/await');
 var k2 = new Discord.Client();
 
 var token;
@@ -147,6 +149,16 @@ function playAudioInChannel(tchannel, vchannel, path) {
 	voiceReactInProgress = false;
 }
 
+async function reactAsync(message, emoji) {
+    message.react(emoji).then(function(reaction) {
+        while (!reaction.me || reaction.me === null) { sleep(10); }
+    }).catch(
+    function(fail) {
+        console.log("Failed to react with " + emoji + " because " + fail);
+    });
+    
+}
+
 k2.on("message", function (message) {
 	var author = message.author;
 	var channel = message.channel;
@@ -185,13 +197,14 @@ k2.on("message", function (message) {
             var vchannel = findInVoiceChannel(message.guild,
                 author.username);
             if (vchannel === null) {
-                message.react("\uD83C\uDDFE"); // Y
-                message.react("\uD83C\uDDEA"); // E
-                message.react("\uD83C\uDDE6"); // A
-                message.react("\uD83C\uDDED"); // H
-                message.react("\uD83C\uDDE7"); // B
-                message.react("\uD83C\uDDF4"); // O
-                message.react("\uD83C\uDDEE"); // I
+                // Still haven't quite figured out async.
+                //reactAsync(message, "\uD83C\uDDFE");
+                //reactAsync(message, "\uD83C\uDDEA");
+                //reactAsync(message, "\uD83C\uDDE6");
+                //reactAsync(message, "\uD83C\uDDED");
+                //reactAsync(message, "\uD83C\uDDE7");
+                //reactAsync(message, "\uD83C\uDDF4");
+                //reactAsync(message, "\uD83C\uDDEE");
             }
             else {
                 voiceReactInProgress = true;
