@@ -185,13 +185,13 @@ k2.on("message", function (message) {
             var vchannel = findInVoiceChannel(message.guild,
                 author.username);
             if (vchannel === null) {
-                message.react("\uD83C\uDDFE");
-                message.react("E");
-                message.react("A");
-                message.react("H");
-                message.react("B");
-                message.react("O");
-                message.react("I");
+                message.react("\uD83C\uDDFE"); // Y
+                message.react("\uD83C\uDDEA"); // E
+                message.react("\uD83C\uDDE6"); // A
+                message.react("\uD83C\uDDED"); // H
+                message.react("\uD83C\uDDE7"); // B
+                message.react("\uD83C\uDDF4"); // O
+                message.react("\uD83C\uDDEE"); // I
             }
             else {
                 voiceReactInProgress = true;
