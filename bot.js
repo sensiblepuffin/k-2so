@@ -185,7 +185,7 @@ k2.on("message", function (message) {
             var vchannel = findInVoiceChannel(message.guild,
                 author.username);
             if (vchannel === null) {
-                message.react("Y");
+                message.react("\uD83C\uDDFE");
                 message.react("E");
                 message.react("A");
                 message.react("H");
