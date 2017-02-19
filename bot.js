@@ -129,6 +129,10 @@ function playAudioInChannel(tchannel, vchannel, path) {
 		tchannel.sendMessage("Have some patience.");
 		return;
 	}
+    var connections = k2.voiceConnections.array();
+    for (var i = 0, len = connections.length; i < len; i++) {
+        connections[i].disconnect();
+    }
 	audioTimeout = new Date();
 	audioTimeout = audioTimeout.setMinutes(audioTimeout.getMinutes() + 5);
 	vchannel.join().then(connection => {
