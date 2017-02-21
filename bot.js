@@ -134,10 +134,12 @@ function playAudioInChannel(tchannel, vchannel, path) {
 		tchannel.sendMessage("Have some patience.");
 		return;
 	}
-    var connections = k2.voiceConnections.array();
-    for (var i = 0, len = connections.length; i < len; i++) {
-        connections[i].disconnect();
-    }
+	if (k2.voiceConnections) {
+        var connections = k2.voiceConnections.array();
+        for (var i = 0, len = connections.length; i < len; i++) {
+            connections[i].disconnect();
+        }
+	}
 	audioTimeout = new Date();
 	audioTimeout = audioTimeout.setMinutes(audioTimeout.getMinutes() + 5);
 	vchannel.join().then(connection => {
@@ -216,7 +218,12 @@ k2.on("message", function (message) {
             }
             else {
                 voiceReactInProgress = true;
-                playAudioInChannel(channel, vchannel, "audio/yeahboy.mp3");
+				try {
+					playAudioInChannel(channel, vchannel, "audio/yeahboy.mp3");
+				} catch(err) {
+					console.error(err);
+					vchannel.disconnect();
+				}
                 voiceReactInProgress = false;
             }
         }
