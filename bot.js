@@ -235,7 +235,7 @@ k2.on("message", function (message) {
                 voiceReactInProgress = false;
             }
         }
-		else if (lmessage.indexOf("peacock" !== -1)) {
+		else if (lmessage.indexOf("peacock") !== -1) {
 			console.log("I should never let Nickhil win ever again.");
 			var vchannel = findInVoiceChannel(message.guild,
 				author.username);
