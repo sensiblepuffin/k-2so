@@ -64,16 +64,21 @@ var functionDict = {
         this.channel.sendMessage("@everyone, a contest has begun! " + this.author + 
             " is giving away " + arguments[0] + " in " + arguments[1] + " minute(s)! " +
             "Use !entercontest to enter the contest!");
+        console.log(this.author + " started contest for " + arguments[0] + ", ends in "
+            + arguments[1] + " minutes");
 		contestEndTime = moment().add(arguments[1], 'minutes').format('LLL').toString();
 		contestDetails = [ this.author, arguments[0], contestEndTime ];
         setTimeout(function(message, prize) {
-			if (contestInProgress)
-				message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " +
-				    "Out of " + (contestParticipants.length-1).toString() + " entries, " +
-				    contestParticipants[Math.ceil(Math.random()*(contestParticipants.length-1))] +
-				    " has won " + prize + "!");
-		contestParticipants = [];
-		contestInProgress = false;
+			if (contestInProgress) {
+                winner = contestParticipants[Math.ceil(Math.random()*(contestParticipants.length-1))];
+                message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " 
+                    + "Out of " + (contestParticipants.length-1).toString() + " entries, "
+			        + winner + " has won " + prize + "!");
+                console.log("Chose winner " + winner + " from " + contestParticipants.length 
+                    + " entries.");
+				contestInProgress = false;
+			}
+		    contestParticipants = [];
         }, 1000*60*arguments[1], this, arguments[0]);
     },
     "entercontest": function() {
@@ -93,9 +98,10 @@ var functionDict = {
 			this.reply("What contest?");
 			return;
 		}
-		this.channel.sendMessage("The current contest was started by " + contestDetails[0] + 
-			", the prize is " + contestDetails[1] + ", and the contest ends at " + 
-			contestDetails[2] + ".");
+		this.channel.sendMessage("The current contest was started by " + contestDetails[0] 
+            + ", the prize is " + contestDetails[1] + ", there are currently " 
+            + contestNumParticipants + " entries and the contest ends at " 
+			+ contestDetails[2] + ".");
 	},
     "endcontest": function() {
         if (!contestInProgress) {
@@ -162,8 +168,7 @@ async function reactAsync(message, emoji) {
     }).catch(
     function(fail) {
         console.log("Failed to react with " + emoji + " because " + fail);
-    });
-    
+    });    
 }
 
 k2.on("message", function (message) {
