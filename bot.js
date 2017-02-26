@@ -67,10 +67,11 @@ var functionDict = {
 		contestEndTime = moment().add(arguments[1], 'minutes').format('LLL').toString();
 		contestDetails = [ this.author, arguments[0], contestEndTime ];
         setTimeout(function(message, prize) {
-            message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " +
-				"Out of " + (contestParticipants.length-1).toString() + " entries, " +
-				contestParticipants[Math.ceil(Math.random()*(contestParticipants.length-1))] +
-                " has won " + prize + "!");
+			if (contestInProgress)
+				message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " +
+				    "Out of " + (contestParticipants.length-1).toString() + " entries, " +
+				    contestParticipants[Math.ceil(Math.random()*(contestParticipants.length-1))] +
+				    " has won " + prize + "!");
 		contestParticipants = [];
 		contestInProgress = false;
         }, 1000*60*arguments[1], this, arguments[0]);
@@ -185,7 +186,8 @@ k2.on("message", function (message) {
 			message.react("\uD83D\uDCA5"); 	// boom
 			message.react("\uD83C\uDFBA"); 	// trumpet
 		} // if
-		if (message.toString().toLowerCase().indexOf("who is champ?") !== -1) {
+		var lmessage = message.toString().toLowerCase();
+		if (lmessage.indexOf("who is champ?") !== -1) {
 			console.log("Hint: It's John Cena");
 			var vchannel = findInVoiceChannel(message.guild, 
 				author.username);
@@ -194,11 +196,16 @@ k2.on("message", function (message) {
 			} // if
             else {
                 voiceReactInProgress = true;
-                playAudioInChannel(channel, vchannel, "audio/whoischamp.mp3");	
+				try {
+                	playAudioInChannel(channel, vchannel, "audio/whoischamp.mp3");	
+				} catch (err) {
+					console.error(err);
+					vchannel.disconnect();
+				}
                 voiceReactInProgress = false;
             }
 		} // if
-        else if (message.toString().toLowerCase().indexOf("yeah boy") !== -1) {
+        else if (lmessage.indexOf("yeah boy") !== -1) {
             console.log("Yeaaaah boiiiii");
             var vchannel = findInVoiceChannel(message.guild,
                 author.username);
@@ -223,5 +230,23 @@ k2.on("message", function (message) {
                 voiceReactInProgress = false;
             }
         }
+		else if (lmessage.indexOf("peacock" !== -1) {
+			console.log("I should never let Nickhil win ever again.");
+			var vchannel = findInVoiceChannel(message.guild,
+				author.username);
+			if (vchannel === null) {
+				message.reply("Go away, Nickhil.");
+			}
+			else {
+                voiceReactInProgress = true;
+				try {
+                	playAudioInChannel(channel, vchannel, "audio/peacock.mp3");	
+				} catch(err) {
+					console.error(err);
+					vchannel.disconnect();
+				}
+                voiceReactInProgress = false;
+            }
+		} // match reaction key
 	} // else
 }); // on.message
