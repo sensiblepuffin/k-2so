@@ -178,7 +178,7 @@ k2.on("message", function (message) {
         var arguments = message.content.substring(1).split(" ");
         var command = arguments[0];
         arguments.shift(); // just the arguments
-		console.log(command + " invoked by: " + author);
+		console.log(command + " invoked by: " + author.username);
         if (responseDict[command]) { 
         	channel.sendMessage(responseDict[command]);
         } // if
@@ -188,6 +188,7 @@ k2.on("message", function (message) {
     } // if
 	// non-command responses
 	else {
+		console.log("Reacting to " + author.username);
 	 	if (message.toString().indexOf("JOHN CENA") !== -1) {
 			message.react("\uD83D\uDCA5"); 	// boom
 			message.react("\uD83C\uDFBA"); 	// trumpet
