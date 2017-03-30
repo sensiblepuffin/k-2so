@@ -178,6 +178,7 @@ k2.on("message", function (message) {
         var arguments = message.content.substring(1).split(" ");
         var command = arguments[0];
         arguments.shift(); // just the arguments
+		console.log(command + " invoked by: " + author);
         if (responseDict[command]) { 
         	channel.sendMessage(responseDict[command]);
         } // if
