@@ -1,4 +1,6 @@
 var Discord = require('discord.js');
+var client = new Discord.Client();
+
 var fs = require('fs');
 var path = require('path');
 var http = require('http');
@@ -54,14 +56,14 @@ var functionDict = {
         var arguments = this.content.substring(1).split("!");
         arguments.shift(); // just the arguments
         if (arguments.length !== 2) {
-            this.channel.sendMessage("The syntax of this command is: \n" + 
+            this.channel.send("The syntax of this command is: \n" + 
 				"!contest !<what you are giving away> !<how long the contest will last" +
 				" [minutes]>", { code : true });
             return;
         }
         contestInProgress = true;
         contestNumParticipants = contestParticipants.push("No one");
-        this.channel.sendMessage("@everyone, a contest has begun! " + this.author + 
+        this.channel.send("@everyone, a contest has begun! " + this.author + 
             " is giving away " + arguments[0] + " in " + arguments[1] + " minute(s)! " +
             "Use !entercontest to enter the contest!");
         console.log(this.author + " started contest for " + arguments[0] + ", ends in "
@@ -71,7 +73,7 @@ var functionDict = {
         setTimeout(function(message, prize) {
 			if (contestInProgress) {
                 winner = contestParticipants[Math.ceil(Math.random()*(contestParticipants.length-1))];
-                message.channel.sendMessage("@everyone, " + message.author + "'s contest has ended! " 
+                message.channel.send("@everyone, " + message.author + "'s contest has ended! " 
                     + "Out of " + (contestParticipants.length-1).toString() + " entries, "
 			        + winner + " has won " + prize + "!");
                 console.log("Chose winner " + winner + " from " + contestParticipants.length 
@@ -91,14 +93,14 @@ var functionDict = {
             return;
         }
         contestNumParticipants = contestParticipants.push(this.author);
-        this.channel.sendMessage("Your entry has been received. Good luck!");
+        this.channel.send("Your entry has been received. Good luck!");
     },
 	"conteststatus": function() {
 		if (!contestInProgress) {
 			this.reply("What contest?");
 			return;
 		}
-		this.channel.sendMessage("The current contest was started by " + contestDetails[0] 
+		this.channel.send("The current contest was started by " + contestDetails[0] 
             + ", the prize is " + contestDetails[1] + ", there are currently " 
             + contestNumParticipants + " entries and the contest ends at " 
 			+ contestDetails[2] + ".");
@@ -109,11 +111,11 @@ var functionDict = {
             return;
         }
 		if (this.author !== contestDetails[0]) {
-			this.channel.sendMessage("This isn't your contest.");
+			this.channel.send("This isn't your contest.");
 			return;
 		}
         contestInProgress = false;
-        this.channel.sendMessage("@everyone, " + this.author + " has ended the contest "  +
+        this.channel.send("@everyone, " + this.author + " has ended the contest "  +
             "prematurely, similar to how their most recent sexual encounter ended.");
     },
     "currenttime": function() {
@@ -133,35 +135,37 @@ function findInVoiceChannel(guild, userName) {
 
 function playAudioInChannel(tchannel, vchannel, path) {
 	if (new Date().getTime() < audioTimeout) {
-		tchannel.sendMessage("Have some patience.");
+		tchannel.send("Have some patience.");
 		return;
 	}
-	if (k2.voiceConnections) {
-        var connections = k2.voiceConnections.array();
+	if (client.voiceConnections) {
+        var connections = client.voiceConnections.array();
         for (var i = 0, len = connections.length; i < len; i++) {
             connections[i].disconnect();
         }
 	}
 	audioTimeout = new Date();
 	audioTimeout = audioTimeout.setMinutes(audioTimeout.getMinutes() + 5);
+		
 	vchannel.join().then(connection => {
-		console.log("Joined " + vchannel.name);
+	    console.log("Joined " + vchannel.name);
         setTimeout(function() {
             const dispatch = connection.playFile(path, 
-                { volume : 0.5 }, function(error, intent) {
+           		{ volume : 0.5 }, function(error, intent) {
                 intent.on("error", function(err) {
-                    console.log("playFile: " + error);
-                })
+                console.log("playFile: " + error);
+               	})
             });
             dispatch.on('speaking',(val) =>  {
-			if (!val) { connection.disconnect(); }
-			})
-			}, 750); })
-        .catch(console.log);
+	    	if (!val) { connection.disconnect(); }
+	    	})
+	    }, 750); 
+    }).catch(console.log);
 	vchannel.leave();
 	voiceReactInProgress = false;
 }
 
+/*
 async function reactAsync(message, emoji) {
     message.react(emoji).then(function(reaction) {
         while (!reaction.me || reaction.me === null) { sleep(10); }
@@ -170,6 +174,7 @@ async function reactAsync(message, emoji) {
         console.log("Failed to react with " + emoji + " because " + fail);
     });    
 }
+*/
 
 k2.on("message", function (message) {
 	var author = message.author;
@@ -180,7 +185,7 @@ k2.on("message", function (message) {
         arguments.shift(); // just the arguments
 		console.log(command + " invoked by: " + author.username);
         if (responseDict[command]) { 
-        	channel.sendMessage(responseDict[command]);
+        	channel.send(responseDict[command]);
         } // if
         else if (functionDict[command]) {
             functionDict[command].call(message);
@@ -196,8 +201,9 @@ k2.on("message", function (message) {
 		var lmessage = message.toString().toLowerCase();
 		if (lmessage.indexOf("who is champ?") !== -1) {
 			console.log("Hint: It's John Cena");
-			var vchannel = findInVoiceChannel(message.guild, 
-				author.username);
+			//var vchannel = findInVoiceChannel(message.guild, 
+			//	author.username);
+			var vchannel = message.member.voiceChannel;
 			if (vchannel === null) {
 				message.reply("THAT QUESTION WILL BE ANSWERED THIS SUNDAY!");
 			} // if
@@ -214,8 +220,9 @@ k2.on("message", function (message) {
 		} // who is champ?
         else if (lmessage.indexOf("yeah boy") !== -1) {
             console.log("Yeaaaah boiiiii");
-            var vchannel = findInVoiceChannel(message.guild,
-                author.username);
+            //var vchannel = findInVoiceChannel(message.guild,
+            //    author.username);
+			var vchannel = message.member.voiceChannel;
             if (vchannel === null) {
                 // Still haven't quite figured out async.
                 //reactAsync(message, "\uD83C\uDDFE");
@@ -232,15 +239,16 @@ k2.on("message", function (message) {
 					playAudioInChannel(channel, vchannel, "audio/yeahboy.mp3");
 				} catch(err) {
 					console.error(err);
-					vchannel.disconnect();
+					vchannel.leave();
 				}
                 voiceReactInProgress = false;
             }
         } // yeah boy
 		else if (lmessage.indexOf("peacock") !== -1) {
 			console.log("I should never let Nickhil win ever again.");
-			var vchannel = findInVoiceChannel(message.guild,
-				author.username);
+			//var vchannel = findInVoiceChannel(message.guild,
+			//	author.username);
+			var vchannel = message.member.voiceChannel;
 			if (vchannel === null) {
 				message.reply("Go away, Nickhil.");
 			}
@@ -257,8 +265,9 @@ k2.on("message", function (message) {
 		} // peacock
 		else if (lmessage.indexOf("why do you have to be mad") !== -1) {
 			console.log("Is only game. Why do you heff to be mehd?");
-			var vchannel = findInVoiceChannel(message.guild,
-				author.username);
+			//var vchannel = findInVoiceChannel(message.guild,
+			//	author.username);
+			var vchannel = message.member.voiceChannel;
 			if (vchannel === null) {
 				message.reply("Is only game.");
 			}
@@ -275,8 +284,9 @@ k2.on("message", function (message) {
 		} // why do you have to be mad?
 		else if (lmessage.indexOf("why don't we just relax") !== -1) {
 			console.log("WOULD YOU LIKE AM OR FUM?");
-			var vchannel = findInVoiceChannel(message.guild,
-				author.username);
+			//var vchannel = findInVoiceChannel(message.guild,
+			//	author.username);
+			var vchannel = message.member.voiceChannel;
 			if (vchannel === null) {
 				message.reply("Would you like AHM or FUM?");
 			}
