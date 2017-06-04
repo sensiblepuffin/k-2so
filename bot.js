@@ -211,7 +211,7 @@ k2.on("message", function (message) {
 				}
                 voiceReactInProgress = false;
             }
-		} // if
+		} // who is champ?
         else if (lmessage.indexOf("yeah boy") !== -1) {
             console.log("Yeaaaah boiiiii");
             var vchannel = findInVoiceChannel(message.guild,
@@ -236,7 +236,7 @@ k2.on("message", function (message) {
 				}
                 voiceReactInProgress = false;
             }
-        }
+        } // yeah boy
 		else if (lmessage.indexOf("peacock") !== -1) {
 			console.log("I should never let Nickhil win ever again.");
 			var vchannel = findInVoiceChannel(message.guild,
@@ -254,6 +254,42 @@ k2.on("message", function (message) {
 				}
                 voiceReactInProgress = false;
             }
-		} // match reaction key
+		} // peacock
+		else if (lmessage.indexOf("why do you have to be mad") !== -1) {
+			console.log("Is only game. Why do you heff to be mehd?");
+			var vchannel = findInVoiceChannel(message.guild,
+				author.username);
+			if (vchannel === null) {
+				message.reply("Is only game.");
+			}
+			else {
+				voiceReactInProgress = true;
+				try {
+					playAudioInChannel(channel, vchannel, "audio/why-you-heff-to-be-mehd.mp3");
+				} catch (err) {
+					console.error(err);
+					vchannel.disconnect();
+				}
+				voiceReactInProgress = false;		
+			}
+		} // why do you have to be mad?
+		else if (lmessage.indexOf("why don't we just relax") !== -1) {
+			console.log("WOULD YOU LIKE AM OR FUM?");
+			var vchannel = findInVoiceChannel(message.guild,
+				author.username);
+			if (vchannel === null) {
+				message.reply("Would you like AHM or FUM?");
+			}
+			else {
+				voiceReactInProgress = true;
+				try {
+					playAudioInChannel(channel, vchannel, "audio/why-you-heff-to-be-mehd.mp3");
+				} catch (err) {
+					console.error(err);
+					vchannel.disconnect();
+				}
+				voiceReactInProgress = false;		
+			}
+		} // why don't we just relax?
 	} // else
 }); // on.message
