@@ -1,5 +1,4 @@
 var Discord = require('discord.js');
-var client = new Discord.Client();
 
 var fs = require('fs');
 var path = require('path');
@@ -138,8 +137,8 @@ function playAudioInChannel(tchannel, vchannel, path) {
 		tchannel.send("Have some patience.");
 		return;
 	}
-	if (client.voiceConnections) {
-        var connections = client.voiceConnections.array();
+	if (k2.voiceConnections) {
+        var connections = k2.voiceConnections.array();
         for (var i = 0, len = connections.length; i < len; i++) {
             connections[i].disconnect();
         }
